@@ -1,0 +1,132 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+:grafana-production: https://grafana.app-sre.devshift.net/
+:grafana-stage: https://grafana.stage.devshift.net/
+
+// end header
+= Override observability stack configuration
+
+toc::[]
+
+== Description
+
+The purpose of this SOP is to describe the process of overriding the observability configurations. This is useful when in need of disabling the observability stack (for tests clusters) or when changing the Observatorium tenant the cluster should upload the metrics to.
+
+== Prerequisites
+
+1. You will need access to the console of the relevant Fleet Shard OSD cluster.
+
+== Disable the observability stack
+The Observability custom resource is managed by the cos-fleetshard-sync component. You can override any property defined by the sync using a ConfigMap.
+
+1. Create cos-fleetshard-sync-config-override.yaml with the following content. In case the ConfigMap already exists, add the line `cos.observability.enabled = false`
++
+```
+apiVersion: v1
+data:
+  override.properties: |
+    cos.observability.enabled = false
+kind: ConfigMap
+metadata:
+  name: cos-fleetshard-sync-config-override
+  namespace: redhat-openshift-connectors
+```
++
+In this case, the ConfigMap will disable the observability stack.
+
+2. Apply the ConfigMap
++
+```
+oc apply -f cos-fleetshard-sync-config-override.yaml
+```
+
+3. Delete the Observability CR
++
+```
+oc delete observability rhoc-observability-stack -n redhat-openshift-connectors
+```
+
+4. Restart the cos-fleetshard-sync
++
+```
+oc delete pod -l "app.kubernetes.io/name= cos-fleetshard-sync" -n redhat-openshift-connectors
+```
+
++
+After restarting the sync, the Observability CR won't be created.
+
+== Point the observability stack to a different environment
+`cos.observability.environment` controls the environment metrics are sent to. The cos-fleetshard-sync will then copy the content of a secret `observatorium-configuration-red-hat-sso-${environment}` and create the appropriate secret for the Observability operator. If the secret `observatorium-configuration-red-hat-sso-${environment}` is missing, the cos-fleetshard-sync will skip the override.
+
+1. Create cos-fleetshard-sync-config-override.yaml with the following content (change environment accordingly). In case the ConfigMap already exist, add the line `cos.observability.environment = staging`
++
+```
+apiVersion: v1
+data:
+  override.properties: |
+    cos.observability.environment = staging
+kind: ConfigMap
+metadata:
+  name: cos-fleetshard-sync-config-override
+  namespace: redhat-openshift-connectors
+```
+
+2. Apply the ConfigMap
++
+```
+oc apply -f cos-fleetshard-sync-config-override.yaml
+```
+
+3. Delete the Observability CR
++
+```
+oc delete observability rhoc-observability-stack -n redhat-openshift-connectors
+```
+
+4. Restart the cos-fleetshard-sync
++
+```
+oc delete pod -l "app.kubernetes.io/name= cos-fleetshard-sync" -n redhat-openshift-connectors
+```
+After restarting the sync, the new resources will be created including the Observability CR
+
+== Validate
+
+1. Check the cos-fleetshard-sync logs
++
+After restarting the cos-fleetshard-syn, check the logs for any errors
++
+```
+oc logs -f -l "app.kubernetes.io/name= cos-fleetshard-sync"
+```
+
++
+If the override succeed you should see log entries confirming the SSO secret and the Observability CR creation:
++
+```
+2022-11-29 09:27:12,014 INFO  [org.bf2.cos.fleetshard.sync.client.FleetShardObservabilityClient] (main) Configuring Observatorium SSO secret
+2022-11-29 09:27:12,210 INFO  [org.bf2.cos.fleetshard.sync.client.FleetShardObservabilityClient] (main) Creating Observability resource
+2022-11-29 09:27:12,587 INFO  [org.bf2.cos.fleetshard.sync.client.FleetShardObservabilityClient] (main) Observability resource created
+```
+
+2. Check the Observability Operator logs for errors
++
+```
+oc logs -f -l "control-plane=controller-manager"
+```
+
+3. Check grafana dashboards
++ Check {grafana-production}[production dashboards] or {grafana-stage}[grafana dashboards] to validate your changes took place.
+
+== Troubleshooting
+
+None
