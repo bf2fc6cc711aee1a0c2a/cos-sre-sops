@@ -1,0 +1,55 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+:grafana-production: https://grafana.app-sre.devshift.net/
+:grafana-stage: https://grafana.stage.devshift.net/
+
+// end header
+= Enable DEBUG log for Strimzi Operator
+
+toc::[]
+
+== Description
+
+The purpose of this SOP is to describe the process of enabling debug logs on Strimzi operator. This is useful for troubleshooting any issues where more verbosity in the logs are required.
+
+== Prerequisites
+
+The access to the OSD cluster where the Strimzi Operator is installed.
+
+== DEBUG log level on Strimzi Operator
+
+To enable DEBUG log level for the Strimzi Operator, follow these steps
+
+- Go to namespace redhat-openshift-connectors. This is the namespace where the Strimzi operator is running.
+
+- Create a config map named "strimzi-override-config" with a property "log.level=debug". The config map looks like the following
++
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: strimzi-override-config
+  namespace: redhat-openshift-connectors
+data:
+  log.level: debug
+----
+
+- Restart the Strimzi operator pod to load the created config map.
+
+== Validate
+
+Check if the DEBUG logs are getting printed on the console for the Strimzi operator pod.
+
+== Troubleshooting
+
+To toggle the logging levels back to their default level, remove the created config map from the namespace and restart the Strimzi operator pod.
+
