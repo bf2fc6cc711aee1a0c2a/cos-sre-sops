@@ -9,8 +9,6 @@ endif::[]
 :numbered:
 :toc: macro
 :toc-title: pass:[<b>Table of Contents</b>]
-:grafana-production: https://grafana.app-sre.devshift.net/
-:grafana-stage: https://grafana.stage.devshift.net/
 
 // end header
 = Derive OCM Cluster ID from Connector Cluster ID
@@ -19,14 +17,13 @@ toc::[]
 
 == Description
 
-The purpose of this SOP is to describe the process of deriving the OCM cluster id using the connector cluster id. This is useful when you need the retrieve the OCM cluster id for troubleshooting any issues/alert.
+The purpose of this SOP is to describe the process of deriving the OCM cluster id using the connector cluster id. This is useful when you need the retrieve the OCM cluster id for troubleshooting any issue/alert.
 
 == Prerequisites
 
-1. Need Connector cluster id using which OCM cluster id will be retrieved
-2. https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/releases[Rhoc cli]
-3. https://github.com/openshift-online/ocm-cli[ocm cli]
-4. retrieve your https://qaprodauth.cloud.redhat.com/openshift/token[ocm-offline-token] using the _kafka_supporting account
+1. https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/releases[RHOC cli]
+2. https://github.com/openshift-online/ocm-cli[OCM cli]
+3. retrieve your https://qaprodauth.cloud.redhat.com/openshift/token[ocm-offline-token] using the _kafka_supporting account
 - follow the steps on that page to run the ocm login with the provided token
 
 == Derive OCM cluster ID from Connector Cluster ID
