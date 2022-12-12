@@ -23,8 +23,8 @@ The purpose of this SOP is to describe the process of deriving the OCM cluster i
 
 1. https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/releases[RHOC cli]
 2. https://github.com/openshift-online/ocm-cli[OCM cli]
-3. retrieve your https://qaprodauth.cloud.redhat.com/openshift/token[ocm-offline-token] using the _kafka_supporting account
-- follow the steps on that page to run the ocm login with the provided token
+3. Retrieve your https://console.redhat.com/openshift/token[ocm-offline-token] using your Red Hat account
+- Follow the steps on that page to run the ocm login with the provided token
 
 == Derive OCM cluster ID from Connector Cluster ID
 
