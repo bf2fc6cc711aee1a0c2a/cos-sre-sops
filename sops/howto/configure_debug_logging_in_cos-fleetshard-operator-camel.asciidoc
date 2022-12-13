@@ -25,7 +25,7 @@ The access to the OSD cluster where the cos-fleetshard-operator-camel is install
 
 == DEBUG log level  on Camel K Operator
 
-To enable DEBUG log level for the Ccos-fleetshard-operator-camel, follow these steps
+To enable DEBUG log level for the cos-fleetshard-operator-camel, follow these steps
 
 - Go to namespace `redhat-openshift-connectors`. This is the namespace where the "cos-fleetshard-operator-camel" is installed.
 
