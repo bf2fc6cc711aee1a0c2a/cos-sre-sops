@@ -23,9 +23,9 @@ The purpose of this SOP is to describe the process of enabling debug logs on Cam
 
 The access to the OSD cluster where the Camel K Connectors are running.
 
-== DEBUG log level  on Camel K Operator
+== DEBUG log level  on Camel K Connector
 
-To enable DEBUG log level for the camelk connectors, follow these steps
+To enable DEBUG log level for the camel k connectors, follow these steps
 
 - Go to namespace of the running connector. This namespace also holds an empty config map which is created with the connector.
 

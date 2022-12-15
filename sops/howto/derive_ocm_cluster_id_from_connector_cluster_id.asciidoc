@@ -11,13 +11,13 @@ endif::[]
 :toc-title: pass:[<b>Table of Contents</b>]
 
 // end header
-= Derive OCM Cluster ID from Connector Cluster ID
+= Derive OCM External ID from Connector Cluster ID
 
 toc::[]
 
 == Description
 
-The purpose of this SOP is to describe the process of deriving the OCM cluster id using the connector cluster id. This is useful when you need the retrieve the OCM cluster id for troubleshooting any issue/alert.
+The purpose of this SOP is to describe the process of deriving the OCM external id using the connector cluster id. This is useful when you need the retrieve the OCM external id for troubleshooting any issue/alert.
 
 == Prerequisites
 
@@ -26,20 +26,20 @@ The purpose of this SOP is to describe the process of deriving the OCM cluster i
 3. Retrieve your https://console.redhat.com/openshift/token[ocm-offline-token] using your Red Hat account
 - Follow the steps on that page to run the ocm login with the provided token
 
-== Derive OCM cluster ID from Connector Cluster ID
+== Derive OCM external ID from Connector Cluster ID
 
-The following command prints the OCM cluster id
+The following command prints the OCM external id
 ----
-rhoc cc get --id ${cluster-id} --ocm | jq -r '.status.platform.id'
+rhoc cc get --id ${cluster-id} | jq -r '.status.platform.id'
 ----
 where "${cluster-id}" is connector cluster id.
 
-Following is the example for deriving the OCM cluster id for the cluster with connector cluster id `c9nrsjtcqpu8pmmjl5vg`
+Following is the example for deriving the OCM external id for the cluster with connector cluster id `c9nrsjtcqpu8pmmjl5vg`
 ----
-rhoc cc get --id c9nrsjtcqpu8pmmjl5vg --ocm | jq -r '.status.platform.id'
+rhoc cc get --id c9nrsjtcqpu8pmmjl5vg | jq -r '.status.platform.id'
 c021fc2d-d6ed-45b4-ba74-ac51ffca4306
 ----
-Here, `c021fc2d-d6ed-45b4-ba74-ac51ffca4306` is the OCM cluster id.
+Here, `c021fc2d-d6ed-45b4-ba74-ac51ffca4306` is the OCM external id.
 
 == Validate
 
