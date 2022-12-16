@@ -1,0 +1,83 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+
+// end header
+= Enable DEBUG log for Cos-Fleetshard-Operator-Debezium
+
+toc::[]
+
+== Description
+
+The purpose of this SOP is to describe the process of enabling debug logs on cos-fleetshard-operator-debezium. This is useful for troubleshooting any issues where more verbosity in the logs are required.
+
+== Prerequisites
+
+The access to the OSD cluster where the cos-fleetshard-operator-debezium is installed.
+
+== DEBUG log level  on Camel K Operator
+
+To enable DEBUG log level for the cos-fleetshard-operator-debezium, follow these steps
+
+- Go to namespace `redhat-openshift-connectors`. This is the namespace where the cos-fleetshard-operator-debezium is installed.
+
+- Look for the config map named `cos-fleetshard-operator-debezium-config`. This config map is by default created when the operator is installed initially.
+The config map looks something similar
++
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: cos-fleetshard-operator-debezium-config
+  namespace: redhat-openshift-connectors
+data:
+  application.properties: >
+    # all fleetshard logs
+    quarkus.log.category."org.bf2.cos.fleetshard".level = INFO
+
+    # validation of k8s client version and running k8s version
+    quarkus.log.category."io.fabric8.kubernetes.client.internal.VersionUsageUtils".level = ERROR
+
+    # debezium apicurio auth settings
+    cos.operator.debezium.apicurio-auth-service-url = "https://identity.api.stage.openshift.com/auth"
+    cos.operator.debezium.apicurio-auth-realm = "rhoas"
+----
+
+- Override the logging properties by creating a new config map `cos-fleetshard-operator-debezium-config-override`
++
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: cos-fleetshard-operator-debezium-config-override
+  namespace: redhat-openshift-connectors
+data:
+  override.properties: |-
+    quarkus.log.category."org.bf2.cos".level=DEBUG
+    quarkus.log.category."org.bf2.cos".min-level=DEBUG
+    quarkus.log.category."org.bf2.cos.fleetshard".level = DEBUG
+    quarkus.log.category."org.bf2.cos.fleetshard".min-level = DEBUG
+----
++
+NOTE: There are chances that this config map is already created by someone as it can be used to override the default application properties of the cos-fleetshard-operator-debezium. In that case, just add the properties there to override.
++
+NOTE: Enabling DEBUG logs works only when you also set the min-level log for that package to DEBUG.
+
+- Restart the cos-fleetshard-operator-debezium pod to load the created config map.
+
+== Validate
+
+Check if the DEBUG logs are getting printed on the console for the cos-fleetshard-operator-debezium pod.
+
+== Troubleshooting
+
+To toggle the logging levels back to their default level, undo the performed steps and restart the cos-fleetshard-operator-debezium pod.
+
