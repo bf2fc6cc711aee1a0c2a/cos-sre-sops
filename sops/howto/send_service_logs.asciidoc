@@ -1,0 +1,36 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Send Serbvice logs
+
+toc::[]
+
+== Description
+
+The purpose of this SOP is to describe the process of sending service logs to a customer to informa them about a) the need to act or b) some changes we made on their behalf.
+
+== Prerequisites
+
+1. You need the connector ID.
+2. You need the COM cluster ID.
+3. `osdctl` installation to 0.9.0 or higher
+
+== Execute/Resolution
+Follow the https://github.com/openshift/managed-notifications/blob/master/README.md[instruction] on how to send the service log. Note that process requires osdctl installation to 0.9.0 or higher
+
+== Validate
+
+None
+
+== Troubleshooting
+
+None
