@@ -16,7 +16,7 @@ toc::[]
 
 == Description
 
-The purpose of this SOP is to describe the process of sending service logs to a customer to informa them about a) the need to act or b) some changes we made on their behalf.
+The purpose of this SOP is to describe the process of sending service logs to a customer to inform them about a) the need to act or b) some changes we made on their behalf.
 
 == Prerequisites
 
