@@ -34,6 +34,19 @@ Service logs can be accessed through the OCM console:
 
 https://docs.openshift.com/dedicated/osd_cluster_admin/osd_logging/osd-accessing-the-service-logs.html
 
+Alternative, you can query the OCM API:
+
+```
+ocm get /api/service_logs/v1/clusters/<CLUSTER_ID>/cluster_logs
+{
+  "code": "OCM-CA-11",
+  "href": "/api/service_logs/v1/errors/11",
+  "id": "11",
+  "kind": "Error",
+  "operation_id": "2KB3vUsCaD9LFRefuXdwp5Z58l0",
+  "reason": "Account with username pcremin-openshift denied access to perform get on ServiceLog with HTTP call GET /api/service_logs/v1/clusters/463e7706-14d5-4638-a679-c61c2349e7c2/cluster_logs"
+}
+```
 == Troubleshooting
 
 None
