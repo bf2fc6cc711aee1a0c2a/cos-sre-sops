@@ -18,7 +18,7 @@ toc::[]
 
 The purpose of this SOP is to describe the process of sending service logs to a customer to inform them about a) the need to act or b) some changes we made on their behalf.
 
-Service logs appear in console.redhat.com and in addition to this, an email will be send to the addressed listed as contacts for a particular cluster.
+Service logs appear in console.redhat.com and in addition to this, an email will be send to the contacts listed for a particular cluster.
 
 == Prerequisites
 
