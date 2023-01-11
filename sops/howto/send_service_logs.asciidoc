@@ -30,7 +30,9 @@ Follow the https://github.com/openshift/managed-notifications/blob/master/README
 
 == Validate
 
-None
+Service logs can be accessed through the OCM console:
+
+https://docs.openshift.com/dedicated/osd_cluster_admin/osd_logging/osd-accessing-the-service-logs.html
 
 == Troubleshooting
 
