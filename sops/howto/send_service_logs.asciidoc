@@ -16,7 +16,9 @@ toc::[]
 
 == Description
 
-The purpose of this SOP is to describe the process of sending service logs to a customer to informa them about a) the need to act or b) some changes we made on their behalf.
+The purpose of this SOP is to describe the process of sending service logs to a customer to inform them about a) the need to act or b) some changes we made on their behalf.
+
+Service logs appear in console.redhat.com and in addition to this, an email will be send to the addressed listed as contacts for a particular cluster.
 
 == Prerequisites
 
@@ -26,6 +28,7 @@ The purpose of this SOP is to describe the process of sending service logs to a 
 4. Privilege to send service logs using `osdctl` (reserved to SRE)
 
 == Execute/Resolution
+
 Follow the https://github.com/openshift/managed-notifications/blob/master/README.md[instruction] on how to send the service log. Note that process requires osdctl installation to 0.9.0 or higher
 
 == Validate
