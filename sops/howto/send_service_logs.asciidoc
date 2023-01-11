@@ -16,13 +16,14 @@ toc::[]
 
 == Description
 
-The purpose of this SOP is to describe the process of sending service logs to a customer to inform them about a) the need to act or b) some changes we made on their behalf.
+The purpose of this SOP is to describe the process of sending service logs to a customer to informa them about a) the need to act or b) some changes we made on their behalf.
 
 == Prerequisites
 
 1. You need the connector ID.
-2. You need the COM cluster ID.
+2. You need the OCM cluster ID.
 3. `osdctl` installation to 0.9.0 or higher
+4. Priviledge to send service logs using `osdctl` (reserved to SRE)
 
 == Execute/Resolution
 Follow the https://github.com/openshift/managed-notifications/blob/master/README.md[instruction] on how to send the service log. Note that process requires osdctl installation to 0.9.0 or higher
