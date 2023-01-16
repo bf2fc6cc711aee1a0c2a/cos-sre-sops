@@ -1,0 +1,58 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+
+// end header
+= Enable DEBUG log for Debezium Connectors
+
+toc::[]
+
+== Description
+
+The purpose of this SOP is to describe the process of enabling debug logs on Debezium Connectors. This is useful for troubleshooting any issues where more verbosity in the logs are required.
+
+== Prerequisites
+
+The access to the OSD cluster where the Debezium Connectors are running.
+
+== DEBUG log level  on Debezium Connector
+
+To enable DEBUG log level for the Debezium connectors, follow these steps
+
+- Go to namespace of the running connector. This namespace also holds an empty config map which is created with the connector.
+
+- Look for the config map `mctr-<deploymentId>-configmap` where "deploymentID" is the deployment ID of the connector. This ConfigMap can be used to override connector logging properties.
+
+- Override the logging properties on the config map. Following is the example config map
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: mctr-ce8q91td9rkpujajohng-configmap
+  namespace: redhat-openshift-connectors-ce8q7f5d9rkpujajofo0
+data:
+  override.properties: |-
+    io.debezium=DEBUG
+    org.apache.kafka.connect=DEBUG
+----
++
+NOTE: It is not possible to change other properties not related to the log level.
++
+NOTE: Changes made to this ConfigMap triggers a redeployment of the connector with the additional logging supplied properties.
+
+== Validate
+
+Check if the DEBUG logs are getting printed on the console for the connector pod.
+
+== Troubleshooting
+
+To toggle the logging levels back to their default level, undo the performed steps.
+
