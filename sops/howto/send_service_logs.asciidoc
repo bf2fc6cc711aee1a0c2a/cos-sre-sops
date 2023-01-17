@@ -22,10 +22,9 @@ Service logs appear in console.redhat.com and in addition to this, an email will
 
 == Prerequisites
 
-1. You need the connector ID.
-2. You need the OCM cluster ID.
-3. `osdctl` installation to 0.9.0 or higher
-4. Privilege to send service logs using `osdctl` (reserved to SRE)
+1. You need the OCM cluster ID.
+2. `osdctl` installation to 0.9.0 or higher
+3. Privilege to send service logs using `osdctl` (reserved to SRE)
 
 == Execute/Resolution
 
