@@ -1,1 +1,26 @@
 
+# Disaster recovery
+
+Most of the service data is stored in a database, some of it in a secrets manager. All state is managed from the control plane component that's running in APP Interface:
+
+https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-connectors/namespaces/managed-connectors-production.yaml
+
+The database must be setup in a way that satisfies the data service continuity requirements. Same applies for the secretes manager.
+
+To recover the service after a data loss,
+1. use the database service (e.g. AWS RDS) data recovery mechanism,
+2. use the secrets manager (e.g. AWS Secrets Manager) data recovery mechanism and
+3. re-start the control plane component.
+
+General instructions for managing service comoopments through APP Interface can be found here:
+https://gitlab.cee.redhat.com/service/app-interface#our-how-to-guides
+
+Instructions on recovering an RDS instance from a snapshot are available here: https://gitlab.cee.redhat.com/service/app-interface#restoring-rds-databases-from-backups
+
+Instructions on recovering a secrets from a snapshot are available here: 
+https://docs.aws.amazon.com/secretsmanager/latest/userguide/manage_restore-secret.html
+(Pending SOP)
+
+## Data loss impact
+
+In case of a complete data loss, all connector configurations are lost and need to be recreated by the user. 
