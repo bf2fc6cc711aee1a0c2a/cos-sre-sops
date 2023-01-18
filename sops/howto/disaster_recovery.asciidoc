@@ -13,6 +13,8 @@ To recover the service after a data loss:
 2. use the secrets manager (e.g. AWS Secrets Manager) data recovery mechanism and
 3. re-start the control plane component.
 
+NOTE: To perform these step, you need to contact an AppSRE IC to carry it out.
+
 ## Detailed instructions
 
 General instructions for managing service components through APP Interface can be found here:
