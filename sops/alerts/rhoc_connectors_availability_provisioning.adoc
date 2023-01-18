@@ -1,0 +1,109 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= RHOC Connectors Availability / Connector Hangs on Provisioning state
+
+toc::[]
+
+== Description
+
+The purpose of this SOP is to outline the process of resolving the alert `RHOCConnectorsAvailability5mTo30mLongProvisioning`. This alert triggers when a connector whom desired state is `ready`, can't reach that state and instead hangs on `provisioning`.
+
+The alert uses the recorded metrics connector_provisioning:ratio_rate5m and connector_provisioning:ratio_rate30m:
+----
+- alert: RHOCConnectorsAvailability5mTo30mLongProvisioning
+  expr: |
+    (
+      connector_provisioning:ratio_rate5m > 0.9
+      AND
+      connector_provisioning:ratio_rate30m > 0.9
+    )
+----
+
+When a connector is in provisioning for longer than 30 minutes, the alert triggers.
+
+[NOTE]
+It is not clear at the time of writing this document whether this alert counts towards SLO
+
+[WARNING]
+SLO LIMIT for Managed Connectors is 99,5%
+
+== Prerequisites
+
+* Access to the OSD cluster via Backplane.
+* The ID of the affected cluster. This is provided by the alert via a label. It should look something like this: `c5ff3f4ctr234ihcgr8g`.
+* The ID of the affected connector. This is provided by the alert via a label. It should look something like `cbvn81m9fbo9fmh5rn60`
+* [OPTIONAL] https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/tags[RHOC cli] installed. You have to be part of cos-fleet-manager-admin-full-prod rover group
+in order to effectively use the cli.
+
+== Execute/Resolution
+
+The resolution is to restart the connector. You can achieve this using the rhoc-cli(stop / start connector) or issuing ocm commands:
+
+. Store the connector id in a variable for better access
++
+----
+export CONNECTOR_ID=cf3b9jqf85n71rcsklbg
+----
+
+. Fetch the connector to verify its state. Notice, `desired_state` is ready, but `status.state` is provisioning.
++
+----
+% rhoc connectors get --id ${CONNECTOR_ID}
+
+{
+  "id": "cf3b9jqf85n71rcsklbg",
+  "kind": "ConnectorAdminView",
+  "href": "/api/connector_mgmt/v1/admin/kafka_connectors/cf3b9jqf85n71rcsklbg",
+  "owner": "rpitzerj_kafka_supporting",
+  "created_at": "2023-01-17T14:46:39.449852Z",
+  "modified_at": "2023-01-17T14:53:41.991025Z",
+  "name": "generate-sre-deepdive-2",
+  "connector_type_id": "data_generator_source_0.1",
+  "namespace_id": "c9nrsjtcqpu8pmmjl600",
+  "channel": "stable",
+  "desired_state": "stopped",
+  "annotations": {
+    "cos.bf2.org/organisation-id": "13888347",
+    "cos.bf2.org/pricing-tier": "free"
+  },
+  "resource_version": 32113,
+  "status": {
+    "state": "provisioning"
+  }
+}
+----
+
+. Stop and start the connector. Wait few couple of minutes between the commands and verify that the connector actually stopped.
++
+----
+% rhoc connectors stop --id ${CONNECTOR_ID}
+....
+% rhoc connectors get --id ${CONNECTOR_ID}
+% rhoc connectors start --id ${CONNECTOR_ID}
+....
+% rhoc connectors get --id ${CONNECTOR_ID}
+----
+
+== Validate
+
+What steps are required to verify that the procedure has been followed correctly and the required changes have been implemented correctly, with the desired outcome.
+
+. Check the alert is no longer firing.
+. Check that the connector logs are clean of errors.
+. Check the dashboard for `cos_fleetshard_sync_connector_state_count_total{cos_connector_id="<CONNECTOR_ID>" cos_connector_state="provisioning"}` counter.
+
+== Escalate to engineering
+
+* If the above hasn't worked contact engineering.
+** Use the RHOC Run The Service channel in slack: #rhoc-rts.
+** Send a mail to rhoc-rts@redhat.com.
