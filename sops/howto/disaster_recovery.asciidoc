@@ -5,11 +5,15 @@ Most of the service data is stored in a database, some of it in a secrets manage
 
 The database must be setup in a way that satisfies the data service continuity requirements. Same applies for the secretes manager.
 
+## Steps to recover the service 
+
 To recover the service after a data loss:
 
 1. use the database service (e.g. AWS RDS) data recovery mechanism,
 2. use the secrets manager (e.g. AWS Secrets Manager) data recovery mechanism and
 3. re-start the control plane component.
+
+## Detailed instructions
 
 General instructions for managing service components through APP Interface can be found here:
 https://gitlab.cee.redhat.com/service/app-interface#our-how-to-guides
