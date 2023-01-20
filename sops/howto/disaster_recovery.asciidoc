@@ -3,17 +3,17 @@
 
 Most of the service data is stored in a database, some of it in a secrets manager. All state is managed from the control plane component that's running in APP Interface.
 
-The database must be setup in a way that satisfies the data service continuity requirements. Same applies for the secretes manager.
+The database must be setup in a way that satisfies the data service continuity requirements. Same applies for the secrets manager.
 
 ## Steps to recover the service 
 
 To recover the service after a data loss:
 
-1. use the database service (e.g. AWS RDS) data recovery mechanism,
-2. use the secrets manager (e.g. AWS Secrets Manager) data recovery mechanism and
-3. re-start the control plane component.
+1. Use the database service (e.g. AWS RDS) data recovery mechanism,
+2. Use the secrets manager (e.g. AWS Secrets Manager) data recovery mechanism and
+3. Restart the control plane component.
 
-NOTE: To perform these step, you need to contact an AppSRE IC to carry it out.
+NOTE: To perform these steps, you need to contact an AppSRE IC to carry it out.
 
 ## Detailed instructions
 
