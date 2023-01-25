@@ -26,8 +26,7 @@ https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/
 Instructions on recovering an RDS instance from a snapshot are available here: https://gitlab.cee.redhat.com/service/app-interface#restoring-rds-databases-from-backups
 
 Instructions on recovering a secrets from a snapshot are available here: 
-https://docs.aws.amazon.com/secretsmanager/latest/userguide/manage_restore-secret.html
-(Pending SOP)
+https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/docs/aws/sop/restore-secrets-manager-secret.md
 
 ## Data loss impact
 
