@@ -1,5 +1,5 @@
 ### SOP writing guidelines
-When writing SOPS for different topics please try to keep the following guidelines in mind and use the following [template](https://github.com/bf2fc6cc711aee1a0c2a/cos-observability-resources/blob/main/sops/templates/alert.asciidoc). This is to ensure the engineers who will be using these SOPS in a production scenario (potentially from being woken up) have no issues.
+When writing SOPS for different topics please try to keep the following guidelines in mind and use the following [template](https://github.com/bf2fc6cc711aee1a0c2a/cos-sre-sops/blob/main/sops/templates/alert.adoc). This is to ensure the engineers who will be using these SOPS in a production scenario (potentially from being woken up) have no issues.
 
 #### 1. Concise instructions
 

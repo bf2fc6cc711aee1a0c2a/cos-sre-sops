@@ -127,7 +127,7 @@ map[camel.apache.org/integration:mctr-cd779jbhl69lnuj6cbc0 cos.bf2.org/connector
 
 . Identify the reason why the connector is failing by tailing the pod logs. The connector will fail if external systems can't be reached or accessed. For instance a mysql connector will fail if the mysql server is unreachable or if the provided credentials are wrong.
 
-. When the connector fails to run due to external systems, consider https://github.com/bf2fc6cc711aee1a0c2a/cos-observability-resources/blob/main/sops/howto/stop_connector.asciidoc[stopping the connector] and informing the customer.
+. When the connector fails to run due to external systems, consider https://github.com/bf2fc6cc711aee1a0c2a/cos-sre-sops/blob/main/sops/howto/stop_connector.asciidoc[stopping the connector] and informing the customer.
 
 == Validate
 
