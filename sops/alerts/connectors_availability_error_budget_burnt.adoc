@@ -54,7 +54,7 @@ SLO LIMIT for Managed Connectors is 99,5%
 == Prerequisites
 
 * Access to the OSD cluster via Backplane.
-* The ID of the affected cluster. This is provided by the alert via a label. It should look something like this: `c5ff3f4ctr234ihcgr8g`.
+* The ID of the affected cluster. This is provided by the alert via a label. It should look something like this: `c5ff3f4ctr234ihcgr8g`.  Check https://github.com/bf2fc6cc711aee1a0c2a/cos-sre-sops/blob/main/sops/howto/derive_ocm_cluster_id_from_connector_cluster_id.asciidoc[this] for more detail.
 * https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/tags[RHOC cli] installed. You have to be part of cos-fleet-manager-admin-full-prod rover group
 in order to effectively use the cli.
 

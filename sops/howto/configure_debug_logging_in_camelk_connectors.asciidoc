@@ -32,6 +32,7 @@ To enable DEBUG log level for the camel k connectors, follow these steps
 - Look for the config map `mctr-<deploymentId>-configmap` where "deploymentID" is the deployment ID of the connector. This ConfigMap can be used to override connector properties.
 
 - Override the logging properties on the config map. Following is the example config map
++
 ----
 kind: ConfigMap
 apiVersion: v1
