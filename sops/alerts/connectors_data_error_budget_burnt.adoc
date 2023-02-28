@@ -33,9 +33,9 @@ longer one, indicating that the error budget is being burned at an unsafe rate.
 
 [NOTE]
 `application_camel_context_exchanges_total` and `application_camel_context_exchanges_failed_total` metrics
-are reported by the connector pod. The problem could any restart of the connector pod greatly affect the
-accuracy of this metric. Restarting the connector pod will reset both the counter and possibly tamper
-the rate if the period of time used to calculate includes the restart.
+are reported by the connector pod. The accuracy of these metrics is greatly affected by any restart of the
+connector pod and this could be a problem. Restarting the connector pod will reset both the counter.
+This possibly tampers the rate, if the period of time used to calculate includes the restart.
 
 More info on this concept of multi-window multi-burn-rate alerts can be found
 https://sre.google/workbook/alerting-on-slos/#6-multiwindow-multi-burn-rate-alerts[here].
