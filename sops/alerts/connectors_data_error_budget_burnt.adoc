@@ -1,0 +1,149 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= RHOC Connectors Data / SLO Error budget burn
+
+toc::[]
+
+== Description
+
+The purpose of this SOP is to outline the process of resolving the alerts `RHOCConnectorsDataError*`.
+The rules for this alert operate within an OSD cluster. There are four error budget burn alerts that
+are used to protect the RHOC Connectors data success rate SLO.
+
+* slo_connector_data_failure_rate:ratio_rate1h
+* slo_connector_data_failure_rate:ratio_rate6h
+* slo_connector_data_failure_rate:ratio_rate24h
+* slo_connector_data_failure_rate:ratio_rate3d
+
+The source of the alert is the
+`application_camel_context_exchanges_total` and `application_camel_context_exchanges_failed_total` metrics.
+The alert fires when it's error rate is high over a short window of time and a
+longer one, indicating that the error budget is being burned at an unsafe rate.
+
+
+[NOTE]
+`application_camel_context_exchanges_total` and `application_camel_context_exchanges_failed_total` metrics
+are reported by the connector pod. The problem could any restart of the connector pod greatly affect the
+accuracy of this metric. Restarting the connector pod will reset both the counter and possibly tamper
+the rate if the period of time used to calculate includes the restart.
+
+More info on this concept of multi-window multi-burn-rate alerts can be found
+https://sre.google/workbook/alerting-on-slos/#6-multiwindow-multi-burn-rate-alerts[here].
+
+[WARNING]
+SLO LIMIT for Managed Connectors is 99.5%
+
+== Prerequisites
+
+* Access to the OSD cluster via Backplane.
+* The ID of the affected cluster. Connector cluster ID is provided by the alert via a label.
+Check https://github.com/bf2fc6cc711aee1a0c2a/cos-sre-sops/blob/main/sops/howto/derive_ocm_cluster_id_from_connector_cluster_id.asciidoc[this] to derive the OCM cluster Id from connector cluster ID.
+* https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/tags[RHOC cli] installed. You have to be part of cos-fleet-manager-admin-full-prod rover group
+in order to effectively use the cli.
+
+== Execute/Resolution/Troubleshooting
+
+* Store the cluster id in a variable for better access
++
+----
+export CLUSTER_ID=cc6ae6o7764p8lrcfbj0
+----
+
+* List all connectors within this cluster
++
+----
+% rhoc connectors list --cluster-id ${CLUSTER_ID}
+
+  ID (5)                 NAMESPACE_ID           OWNER                         CONNECTOR_TYPE_ID         DESIRED_STATE   STATE    VERSION   AGE
+----------------------- ---------------------- ----------------------------- ------------------------- --------------- -------- --------- --------
+  cd74mms89ot9kejrreng   cc6ae6o7764p8lrcfbk0   openbridge_kafka_supporting   slack_sink_0.1            ready           ready    121805    154m
+  cd755ss89ot9kejrs13g   cc6ae6o7764p8lrcfbk0   openbridge_kafka_supporting   slack_sink_0.1            ready           ready    121870    122m
+  cd76o7takkggo7fhv170   cd75ogc89ot9kejrspng   mk-test-e2e-primary           data_generator_0.1        ready           ready    122013    14m
+  cd71vs5akkggo7fhpj8g   cd71tbtakkggo7fhpgmg   yxing@redhat.com              aws_cloudwatch_sink_0.1   ready           failed   121802    5h39m
+  cd1ur6dakkggo7fcikbg   cc6ae6o7764p8lrcfbk0   openbridge_kafka_supporting   slack_sink_0.1            ready           ready    121803    7d23h
+----
+
+* To identify which all connectors are leading to this failure. We can check the Grafana Dashboards:
+
+. Go to the https://grafana.app-sre.devshift.net/d/3lmqGVq7z/data-plane-overview?orgId=1[Overview Grafana Dashboard]
+and search for the given cluster id in the `Current Clusters` panel.
+
+. Click on the cluster id link to get redirected on the `Data plane | Cluster View` dashboard,
+check the `Exchanges Count` panel for the overall exchanges data of the cluster.
+You will see some exchanges failing out of the total number.
+
+. Click on each "Connector ID" link on the `CamelK Conectors` panel to get redirected to the
+`CamelK Specific Connectors` Dashboard for each connector.
+
+. Check the `Exchanges` panel on `CamelK Specific Connectors` Dashboard for each connector.
+
+. Check each Connector for any failure in the `Exchanges` panel. Note down the "connector-id"
+of the connectors which have the failing exchanges.
+
+. Once you have the "connector-id" of the connectors leading to this issue,
+check the logs for that connector.
+
++
+NOTE: As this type of alerts are cluster-based, the issue can be with single or more than 1 running connectors,
+meaning multiple connectors can also lead to this alert. So figure out the connectors resulting to this alert
+following the above step.
+
+* The project triggering the alerts will have the NAMESPACE_ID attached to the name. For this case `cd71tbtakkggo7fhpgmg`
++
+----
+oc projects | grep cc6ae6o7764p8lrcfbk0
+redhat-openshift-connectors-cc6ae6o7764p8lrcfbk0                  Active
+
+oc project redhat-openshift-connectors-cc6ae6o7764p8lrcfbk0
+Now using project "redhat-openshift-connectors-cc6ae6o7764p8lrcfbk0"
+----
+
+* List pods in the namespace.
++
+----
+% oc get pods
+NAME                                         READY   STATUS    RESTARTS   AGE
+mctr-cd1ur6bhl69lnuj0urn0-7c5d4cd55f-shnvx   1/1     Running   0          3h49m
+mctr-cd74mmrhl69lnuj68vag-c5d8dd8c9-tz8rw    1/1     Running   0          3h3m
+mctr-cd755t3hl69lnuj69jq0-856f75b99-dmnbq    1/1     Running   0          151m
+mctr-cd779jbhl69lnuj6cbc0-7765f5d48c-f7fzm   0/1     Running   0          6m51s
+----
+
+* The CONNECTOR_ID is NOT part of the pod name, but it is a label named `cos.bf2.org/connector.id`. Check that you have the right pod
++
+----
+oc get pod mctr-cd779jbhl69lnuj6cbc0-7765f5d48c-f7fzm -o template --template '{{.metadata.labels}}'
+map[camel.apache.org/integration:mctr-cd779jbhl69lnuj6cbc0 cos.bf2.org/connector.id:cd779jbhl69lnuj6cba0 cos.bf2.org/connector.type.id:aws_sqs_source_0.1 cos.bf2.org/deployment.id:cd779jbhl69lnuj6cbc0 cos.bf2.org/operator.type:camel-connector-operator pod-template-hash:7765f5d48c]
+
+----
+
+* To troubleshoot exchange failures in Camel K, it is important to check the connector logs
+and identify the specific error or exception that is occurring. The exchange may fail if the message being routed is in an invalid format. . For example, if the message is missing required fields or contains invalid data, Camel K may not be able to properly route it.
++
+----
+oc logs -f mctr-cd779jbhl69lnuj6cbc0-7765f5d48c-f7fzm
+----
+
+== Validate
+
+What steps are required to verify that the procedure has been followed correctly and the required changes have been implemented correctly, with the desired outcome.
+
+. Check the alert is no longer firing.
+. Check that the connector logs are clean of errors.
+. Check the specific connector Grafana dashboard for any exchange failure.
+
+== Escalate to engineering
+
+* If the above hasn't worked contact engineering.
+** Use the RHOC Run The Service channel in slack: #rhoc-rts.
+** Send a mail to rhoc-rts@redhat.com.
